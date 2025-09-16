@@ -4,13 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"my-bot/handlers"
+	"my-bot/internal/config"
+	"my-bot/internal/handlers"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("8276743272:AAHpwF2VawrGNzzRsurbtAIqcrBo-g1_BBI")
+	config := config.NewConfig()
+
+	bot, err := tgbotapi.NewBotAPI(config.APIKey)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -27,7 +30,7 @@ func main() {
 			ctx := context.Background()
 			fmt.Println(update.Message.Text)
 
-			msgText := IHandlers.MainHandler(handlers.Handlers{}, ctx, update.Message.Text)
+			msgText := handlers.Handlers{}.MainHandler(ctx, update.Message.Text)
 
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgText)
 			msg.ReplyToMessageID = update.Message.MessageID
